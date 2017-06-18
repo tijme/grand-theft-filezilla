@@ -4,7 +4,7 @@
 
 .. raw:: html
 
-    <p align="center">A tiny cross-platform Python script that extracts saved/cached FileZilla credentials.</p>
+    <p align="center">A tiny cross-platform Python script that steals saved/cached FileZilla credentials.</p>
 
 Installation
 ------------
@@ -14,4 +14,15 @@ Installation
 Usage
 -----
 
-`$ python ./steal.py`
+**Input**
+
+.. code-block:: python
+
+   $ python ./steal.py
+
+**Output**
+
+.. code-block:: python
+
+   username:password@host1:port
+   other:credentials@host2:port

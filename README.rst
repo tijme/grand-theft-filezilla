@@ -16,13 +16,13 @@ Usage
 
 **Input**
 
-.. code-block:: python
+.. code-block:: bash
 
    $ python ./steal.py
 
 **Output**
 
-.. code-block:: python
+.. code-block:: bash
 
    username:password@host1:port
    other:credentials@host2:port

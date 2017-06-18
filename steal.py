@@ -38,8 +38,8 @@ class GrandTheftFileZilla:
 
     sitemanager_xml_locations = {
         "win": [
-            os.path.join(os.environ['APPDATA'], 'Roaming/FileZilla/sitemanager.xml'),
-            os.path.join(os.environ['APPDATA'], 'FileZilla/sitemanager.xml')
+            os.path.join(os.environ["APPDATA"] if "APPDATA" in os.environ else "", "Roaming/FileZilla/sitemanager.xml"),
+            os.path.join(os.environ["APPDATA"] if "APPDATA" in os.environ else "", "FileZilla/sitemanager.xml")
         ],
         "linux": [
             "~/.filezilla/sitemanager.xml"

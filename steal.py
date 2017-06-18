@@ -70,7 +70,7 @@ class GrandTheftFileZilla:
         for server in root[0].findall('Server'):
             self.__credentials.append((
                 server.find('User').text,
-                str(base64.b64decode(server.find('Pass').text), 'utf-8'),
+                base64.b64decode(server.find('Pass').text).decode('utf-8'),
                 server.find('Host').text,
                 server.find('Port').text
             ))

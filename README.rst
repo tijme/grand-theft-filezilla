@@ -1,4 +1,4 @@
-.. image:: https://cdn.rawgit.com/tijme/grand-theft-filezilla/master/.github/logo.svg
+.. image:: https://github.com/tijme/grand-theft-filezilla/blob/master/.github/logo.png
    :alt: Grand Theft FileZilla Logo
    :align: center
 

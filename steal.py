@@ -127,6 +127,6 @@ if __name__ == "__main__":
         logging.warning("No servers with credentials found.")
 
     for (namevl, uservl, passvl, hostvl, portvl) in credentials:
-        logging.info("Server found.\n    Name: " + namevl + " \n    User: " + uservl + " \n    Pass: " + passvl + " \n    Host: " + hostvl + " \n    Port: " + portvl)
+        logging.info("Details of server:\n    Name: " + namevl + " \n    User: " + uservl + " \n    Pass: " + passvl + " \n    Host: " + hostvl + " \n    Port: " + portvl)
 
     logging.info("Finished searching.")

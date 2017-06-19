@@ -9,7 +9,9 @@
 Installation
 ------------
 
-`$ git clone git@github.com:tijme/grand-theft-filezilla.git`
+.. code-block:: bash
+
+   $ git clone git@github.com:tijme/grand-theft-filezilla.git
 
 Usage
 -----

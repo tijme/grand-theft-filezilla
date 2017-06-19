@@ -110,6 +110,25 @@ class GrandTheftFileZilla:
 
         return self.__credentials
 
+    def print_banner(self):
+        """Print a useless ASCII art banner to make things look a bit nicer."""
+
+        print("""
+     ██████╗ ██████╗  █████╗ ███╗   ██╗██████╗     ████████╗██╗  ██╗███████╗███████╗████████╗
+    ██╔════╝ ██╔══██╗██╔══██╗████╗  ██║██╔══██╗    ╚══██╔══╝██║  ██║██╔════╝██╔════╝╚══██╔══╝
+    ██║  ███╗██████╔╝███████║██╔██╗ ██║██║  ██║       ██║   ███████║█████╗  █████╗     ██║
+    ██║   ██║██╔══██╗██╔══██║██║╚██╗██║██║  ██║       ██║   ██╔══██║██╔══╝  ██╔══╝     ██║
+    ╚██████╔╝██║  ██║██║  ██║██║ ╚████║██████╔╝       ██║   ██║  ██║███████╗██║        ██║
+     ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝        ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝        ╚═╝
+
+                ███████╗██╗██╗     ███████╗███████╗██╗██╗     ██╗      █████╗
+                ██╔════╝██║██║     ██╔════╝╚══███╔╝██║██║     ██║     ██╔══██╗
+                █████╗  ██║██║     █████╗    ███╔╝ ██║██║     ██║     ███████║
+                ██╔══╝  ██║██║     ██╔══╝   ███╔╝  ██║██║     ██║     ██╔══██║
+                ██║     ██║███████╗███████╗███████╗██║███████╗███████╗██║  ██║
+                ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
+    """)
+
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
@@ -117,9 +136,12 @@ if __name__ == "__main__":
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
+    grand_theft_filezilla = GrandTheftFileZilla()
+    grand_theft_filezilla.print_banner();
+
     logging.info("Started searching for credentials stored in FileZilla.")
 
-    credentials = GrandTheftFileZilla().get_credentials()
+    credentials = grand_theft_filezilla.get_credentials()
 
     if credentials:
         logging.info(str(len(credentials)) + " servers with credentials found.")

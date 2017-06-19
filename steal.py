@@ -74,7 +74,7 @@ class GrandTheftFileZilla:
 
         root = xml.etree.ElementTree.parse(location).getroot()
 
-        if not root:
+        if not len(root):
             return
 
         for server in root[0].findall("Server"):

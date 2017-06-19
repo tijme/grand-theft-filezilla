@@ -137,7 +137,7 @@ if __name__ == "__main__":
     )
 
     grand_theft_filezilla = GrandTheftFileZilla()
-    grand_theft_filezilla.print_banner();
+    grand_theft_filezilla.print_banner()
 
     logging.info("Started searching for credentials stored in FileZilla.")
 

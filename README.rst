@@ -4,7 +4,7 @@
 
 .. raw:: html
 
-    <p align="center">A tiny cross-platform Python script that steals saved/cached FileZilla credentials.</p>
+    <p align="center">A tiny cross-platform Python script that steals saved & cached FileZilla credentials.</p>
 
 Installation
 ------------

